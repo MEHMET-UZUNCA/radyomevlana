@@ -110,4 +110,62 @@ class DailyContentService
             'soz'   => DailyContent::todayOf('soz'),
         ];
     }
+
+    public function getRotatedAyet(int $slot, int $intervalHours = 6): ?object
+    {
+        return \Illuminate\Support\Facades\Cache::remember("ayet_rot_{$slot}", $intervalHours * 3600, function () use ($slot) {
+            $ayetNum = ($slot * 17 % 6236) + 1;
+
+            $trRes = Http::timeout(10)->get("https://api.alquran.cloud/v1/ayah/{$ayetNum}/tr.diyanet");
+            if (!$trRes->successful()) {
+                return DailyContent::where('type', 'ayet')->latest('date')->first();
+            }
+
+            $tr = $trRes->json('data');
+            if (empty($tr['text'])) {
+                return DailyContent::where('type', 'ayet')->latest('date')->first();
+            }
+
+            $arText = null;
+            $arRes  = Http::timeout(10)->get("https://api.alquran.cloud/v1/ayah/{$ayetNum}/quran-uthmani");
+            if ($arRes->successful()) {
+                $arText = $arRes->json('data.text');
+            }
+
+            $surah  = $tr['surah']['name'] ?? '';
+            $ayahNo = $tr['numberInSurah'] ?? '';
+
+            return (object) [
+                'content_ar' => $arText,
+                'content_tr' => $tr['text'],
+                'source'     => $surah ? "{$surah} Suresi, {$ayahNo}. Ayet" : '',
+            ];
+        });
+    }
+
+    public function getRotatedHadis(int $slot, int $intervalHours = 6): ?object
+    {
+        return \Illuminate\Support\Facades\Cache::remember("hadis_rot_{$slot}", $intervalHours * 3600, function () use ($slot) {
+            $hadisNo  = ($slot % 42) + 1;
+            $response = Http::timeout(10)
+                ->get("https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@latest/editions/tur-nawawi/{$hadisNo}.json");
+
+            if (!$response->successful()) {
+                return DailyContent::where('type', 'hadis')->latest('date')->first();
+            }
+
+            $hadiths = $response->json('hadiths') ?? [];
+            $hadis   = $hadiths[0] ?? null;
+
+            if (!$hadis || empty($hadis['text'])) {
+                return DailyContent::where('type', 'hadis')->latest('date')->first();
+            }
+
+            return (object) [
+                'content_ar' => null,
+                'content_tr' => $hadis['text'],
+                'source'     => "Kırk Hadis, {$hadisNo}. Hadis",
+            ];
+        });
+    }
 }

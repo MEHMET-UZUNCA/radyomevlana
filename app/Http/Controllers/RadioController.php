@@ -21,12 +21,27 @@ class RadioController extends Controller
 
     public function index()
     {
-        $stats         = $this->shoutcast->getStats();
-        $history       = SongHistory::latest('played_at')->limit(20)->get();
-        $prayerTimes   = $this->prayer->today();
-        $nextPrayer    = $prayerTimes ? $this->prayer->nextPrayer($prayerTimes) : null;
-        $dailyContents = $this->daily->getToday();
-        $gununSozu     = EditorPost::where('is_gunun_sozu', true)->where('is_published', true)->first();
+        $stats       = $this->shoutcast->getStats();
+        $history     = SongHistory::latest('played_at')->limit(20)->get();
+        $prayerTimes = $this->prayer->today();
+        $nextPrayer  = $prayerTimes ? $this->prayer->nextPrayer($prayerTimes) : null;
+
+        $ayetSikligi  = (int) Setting::get('ayet_sikligi', 6);
+        $hadisSikligi = (int) Setting::get('hadis_sikligi', 6);
+        $sozSikligi   = (int) Setting::get('gunun_sozu_sikligi', 6);
+
+        $ayetSlot  = (int) floor(time() / (3600 * $ayetSikligi));
+        $hadisSlot = (int) floor(time() / (3600 * $hadisSikligi));
+        $sozSlot   = (int) floor(time() / (3600 * $sozSikligi));
+
+        $dailyContents = [
+            'ayet'  => $this->daily->getRotatedAyet($ayetSlot, $ayetSikligi),
+            'hadis' => $this->daily->getRotatedHadis($hadisSlot, $hadisSikligi),
+            'soz'   => null,
+        ];
+
+        $sozPool   = EditorPost::where('is_gunun_sozu', true)->where('is_published', true)->orderBy('id')->get();
+        $gununSozu = $sozPool->isNotEmpty() ? $sozPool[$sozSlot % $sozPool->count()] : null;
 
         return view('radio.index', compact('stats', 'history', 'prayerTimes', 'nextPrayer', 'dailyContents', 'gununSozu'));
     }

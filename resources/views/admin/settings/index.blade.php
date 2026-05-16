@@ -94,6 +94,35 @@
         </div>
     </div>
 
+    {{-- İçerik Rotasyon --}}
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+        <h3 class="font-semibold text-gray-700 mb-1 flex items-center gap-2">
+            <i class="fa-solid fa-rotate text-brand text-sm"></i> İçerik Rotasyon Sıklığı
+        </h3>
+        <p class="text-xs text-gray-400 mb-4">Ana sayfadaki ayet, hadis ve günün sözü kaç saatte bir değişsin?</p>
+        <div class="grid grid-cols-3 gap-4">
+            <div>
+                <label class="text-xs text-gray-500 mb-1.5 block">Günün Ayeti (saat)</label>
+                <input type="number" name="ayet_sikligi" min="1" max="24"
+                    value="{{ $settings['ayet_sikligi'] ?? 6 }}"
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
+            </div>
+            <div>
+                <label class="text-xs text-gray-500 mb-1.5 block">Günün Hadisi (saat)</label>
+                <input type="number" name="hadis_sikligi" min="1" max="24"
+                    value="{{ $settings['hadis_sikligi'] ?? 6 }}"
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
+            </div>
+            <div>
+                <label class="text-xs text-gray-500 mb-1.5 block">Günün Sözü (saat)</label>
+                <input type="number" name="gunun_sozu_sikligi" min="1" max="168"
+                    value="{{ $settings['gunun_sozu_sikligi'] ?? 6 }}"
+                    class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
+            </div>
+        </div>
+        <p class="text-xs text-gray-300 mt-3">Default: 6 saat — Ayet ve hadis için 1–24, söz için 1–168 arası değer girin.</p>
+    </div>
+
     {{-- Sosyal Medya --}}
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
         <h3 class="font-semibold text-gray-700 mb-4 flex items-center gap-2">
