@@ -1,5 +1,24 @@
 # Changelog — Radyo Mevlana
 
+## [1.4.0] — 2026-05-16
+
+### Eklendi
+- **Günün Sözü Entegrasyonu**: Editör yazılarında "Günün Sözü" işaret kutucuğu eklendi
+  - Admin panelinden herhangi bir editör yazısı tek tıkla günün sözü olarak seçilebilir
+  - Seçili yazı ana sayfada Günün Sözü kutusunda özet + "Devamını oku" bağlantısıyla gösterilir
+  - Aynı anda yalnızca bir yazı aktif olabilir; yeni seçimde önceki otomatik temizlenir
+  - Tick'siz durumda AlQuran API'den gelen söz gösterilmeye devam eder
+- **Shoutcast Geçmiş Import**: `shoutcast:import-history` artisan komutu; `played.html?sid=1` parse edilerek son çalınan parçalar veritabanına aktarılır
+- **Son Çalan Parçalar Genişletildi**: Limit 10'dan 20'ye çıkarıldı; AJAX güncellemesi de 20 parça döndürür
+- **Ana Sayfa Motto Şeridi**: Hero bölümü altında manevi motto satırı eklendi
+- **21 Editör Yazısı**: Nefsin Yedi Mertebesi, Letâifler, Rüya/Yakaza/Keşif, 40 Kilit-40 Anahtar ve diğer konuları kapsayan manevi içerik serisi eklendi
+
+### Düzeltildi
+- Editör yazısı detay sayfasında HTML içerik `{{ }}` ile escape edilerek ham etiketler görünüyordu; `{!! !!}` ile düzeltildi
+- `<h3>`, `<ul>`, `<blockquote>`, `<strong>` etiketleri artık Tailwind prose sınıflarıyla doğru biçimleniyor
+
+---
+
 ## [1.3.0] — 2026-05-11
 
 ### Eklendi
@@ -20,7 +39,6 @@
 
 ### Eklendi
 - **İletişim Formu**: `/iletisim` rotası, ContactController, görünüm ve nav linki
-- **Mehmet Uzunca Sözü**: İletişim sayfası hero bölümünde alıntı
 
 ### Düzeltildi
 - Production `.htaccess`: `ea-php83` handler ile PHP 8.3.30 kullanımı (ea-php82 cageFS nedeniyle PHP 7.4 veriyordu)
