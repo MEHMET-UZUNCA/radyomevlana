@@ -26,10 +26,17 @@
                 <textarea name="content" rows="12"
                     class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand resize-none font-mono">{{ old('content', $editorPost->content) }}</textarea>
             </div>
-            <div class="flex items-center gap-2">
-                <input type="checkbox" name="is_published" id="pub" value="1"
-                    {{ $editorPost->is_published ? 'checked' : '' }} class="w-4 h-4 accent-brand">
-                <label for="pub" class="text-sm text-gray-600">Yayında</label>
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="is_published" id="pub" value="1"
+                        {{ $editorPost->is_published ? 'checked' : '' }} class="w-4 h-4 accent-brand">
+                    <label for="pub" class="text-sm text-gray-600">Yayında</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="is_gunun_sozu" id="gsoz" value="1"
+                        {{ $editorPost->is_gunun_sozu ? 'checked' : '' }} class="w-4 h-4 accent-amber-500">
+                    <label for="gsoz" class="text-sm text-gray-600">⭐ Günün Sözü olarak göster</label>
+                </div>
             </div>
             <div class="flex gap-3">
                 <button type="submit" class="bg-brand text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-brand-light transition">Güncelle</button>

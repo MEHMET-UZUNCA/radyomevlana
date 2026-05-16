@@ -202,7 +202,25 @@
             @endif
 
             {{-- Söz --}}
-            @if($dailyContents['soz'])
+            @if(isset($gununSozu) && $gununSozu)
+            @php $excerptText = $gununSozu->excerpt ?: mb_substr(strip_tags($gununSozu->content), 0, 220); @endphp
+            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 flex flex-col">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-quote-left text-white text-sm"></i>
+                    </div>
+                    <span class="text-gray-700 font-semibold text-sm">Günün Sözü</span>
+                </div>
+                <p class="text-gray-700 text-sm leading-relaxed italic flex-1">"{{ $excerptText }}"</p>
+                <div class="mt-3 flex items-center justify-between">
+                    <p class="text-gray-400 text-xs font-medium">— {{ $gununSozu->title }}</p>
+                    <a href="{{ route('editor.show', $gununSozu) }}"
+                       class="text-brand text-xs font-semibold hover:underline flex items-center gap-1">
+                        Devamını oku <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+            @elseif($dailyContents['soz'])
             @php $soz = $dailyContents['soz'] @endphp
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
                 <div class="flex items-center gap-2 mb-3">

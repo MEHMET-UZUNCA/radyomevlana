@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditorPost;
 use App\Models\Setting;
 use App\Models\SongHistory;
 use App\Models\SongRequest;
@@ -25,8 +26,9 @@ class RadioController extends Controller
         $prayerTimes   = $this->prayer->today();
         $nextPrayer    = $prayerTimes ? $this->prayer->nextPrayer($prayerTimes) : null;
         $dailyContents = $this->daily->getToday();
+        $gununSozu     = EditorPost::where('is_gunun_sozu', true)->where('is_published', true)->first();
 
-        return view('radio.index', compact('stats', 'history', 'prayerTimes', 'nextPrayer', 'dailyContents'));
+        return view('radio.index', compact('stats', 'history', 'prayerTimes', 'nextPrayer', 'dailyContents', 'gununSozu'));
     }
 
     public function nowPlaying()

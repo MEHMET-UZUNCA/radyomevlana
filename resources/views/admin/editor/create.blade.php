@@ -34,10 +34,14 @@
                     <input type="datetime-local" name="published_at" value="{{ old('published_at', now()->format('Y-m-d\TH:i')) }}"
                         class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand">
                 </div>
-                <div class="flex items-end pb-1">
+                <div class="flex flex-col gap-2 pb-1">
                     <div class="flex items-center gap-2">
                         <input type="checkbox" name="is_published" id="pub" value="1" checked class="w-4 h-4 accent-brand">
                         <label for="pub" class="text-sm text-gray-600">Hemen yayınla</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_gunun_sozu" id="gsoz" value="1" class="w-4 h-4 accent-amber-500">
+                        <label for="gsoz" class="text-sm text-gray-600">⭐ Günün Sözü olarak göster</label>
                     </div>
                 </div>
             </div>
