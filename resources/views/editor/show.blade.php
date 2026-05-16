@@ -44,7 +44,7 @@
             <i class="fa-solid fa-feather-pointed text-white text-sm"></i>
         </div>
         <div>
-            <p class="font-semibold text-gray-700 text-sm">Radyo Mevlana Editörü</p>
+            <p class="font-semibold text-gray-700 text-sm">Editör — M.U.</p>
             <p class="text-gray-400 text-xs">www.radyomevlana.com</p>
         </div>
     </div>
