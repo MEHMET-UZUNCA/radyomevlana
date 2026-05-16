@@ -299,6 +299,12 @@
         </div>
         @endif
 
+        @if(session('error'))
+        <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
+        </div>
+        @endif
+
         <form action="{{ route('request.store') }}" method="POST" class="space-y-4">
             @csrf
             <div class="grid grid-cols-2 gap-4">
