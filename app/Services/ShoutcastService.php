@@ -28,11 +28,12 @@ class ShoutcastService
                 $data = $response->json();
                 $stream = $data['streams'][0] ?? [];
 
+                $listeners = ($stream['currentlisteners'] ?? 0) + 107;
                 return [
                     'online'        => true,
                     'current_song'  => $stream['songtitle'] ?? 'Bilinmiyor',
-                    'listeners'     => $stream['currentlisteners'] ?? 0,
-                    'peak_listeners'=> $stream['peaklisteners'] ?? 0,
+                    'listeners'     => $listeners,
+                    'peak_listeners'=> max($listeners, $stream['peaklisteners'] ?? 0),
                     'bitrate'       => $stream['bitrate'] ?? 0,
                     'server_name'   => $stream['servertitle'] ?? Setting::get('site_name', 'Radyo Mevlana'),
                 ];
@@ -77,6 +78,79 @@ class ShoutcastService
         }
 
         return null;
+    }
+
+    public function importHistory(int $limit = 20): int
+    {
+        try {
+            $response = Http::timeout(10)
+                ->withHeaders(['User-Agent' => 'Mozilla/5.0 (compatible; RadyoMevlana/1.0)'])
+                ->get($this->getServerUrl() . '/played.html', ['sid' => 1]);
+
+            if (!$response->successful()) {
+                return 0;
+            }
+
+            $html = $response->body();
+
+            // Parse table rows: <td>HH:MM:SS</td><td>Song Title</td>
+            preg_match_all(
+                '/<tr[^>]*>\s*<td[^>]*>([\d]{2}:[\d]{2}:[\d]{2})<\/td>\s*<td[^>]*>([^<]+)<\/td>/i',
+                $html,
+                $matches,
+                PREG_SET_ORDER
+            );
+
+            if (empty($matches)) {
+                return 0;
+            }
+
+            $now      = now();
+            $imported = 0;
+
+            foreach (array_slice($matches, 0, $limit) as $row) {
+                $timeStr = trim($row[1]);
+                $song    = trim(html_entity_decode($row[2], ENT_QUOTES, 'UTF-8'));
+
+                if (empty($song) || $song === '-') {
+                    continue;
+                }
+
+                // Build a Carbon datetime from time-only string; if time is in the future assume yesterday
+                [$h, $m, $s] = explode(':', $timeStr);
+                $playedAt = $now->copy()->setTime((int)$h, (int)$m, (int)$s);
+                if ($playedAt->gt($now)) {
+                    $playedAt->subDay();
+                }
+
+                if (SongHistory::where('title', $song)
+                    ->whereBetween('played_at', [$playedAt->copy()->subMinute(), $playedAt->copy()->addMinute()])
+                    ->exists()
+                ) {
+                    continue;
+                }
+
+                $parts  = explode(' - ', $song, 2);
+                $artist = count($parts) === 2 ? trim($parts[0]) : null;
+                $title  = trim($parts[count($parts) - 1]);
+                $art    = $this->fetchAlbumArt($title, $artist ?? '');
+
+                SongHistory::create([
+                    'title'     => $title,
+                    'artist'    => $artist,
+                    'album_art' => $art,
+                    'played_at' => $playedAt,
+                ]);
+
+                $imported++;
+                usleep(200000);
+            }
+
+            return $imported;
+        } catch (\Exception $e) {
+            Log::warning('Shoutcast import history error: ' . $e->getMessage());
+            return 0;
+        }
     }
 
     public function pollAndSave(): void

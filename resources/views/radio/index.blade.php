@@ -122,6 +122,13 @@
     </div>
 </section>
 
+{{-- ── MOTTO ── --}}
+<div class="bg-brand-dark py-5 px-4 text-center">
+    <p class="text-white/70 text-sm italic max-w-2xl mx-auto leading-relaxed">
+        "Burada yazılanlar, kendini arayana değil; kendini bulmaya hazır olana açılır."
+    </p>
+</div>
+
 {{-- ── ANASAYFA BANNER ── --}}
 @if(isset($banners) && $banners['anasayfa']->isNotEmpty())
 <div class="bg-gray-100 py-4 px-4">

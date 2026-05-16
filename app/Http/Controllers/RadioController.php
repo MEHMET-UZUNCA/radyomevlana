@@ -21,7 +21,7 @@ class RadioController extends Controller
     public function index()
     {
         $stats         = $this->shoutcast->getStats();
-        $history       = SongHistory::latest('played_at')->limit(10)->get();
+        $history       = SongHistory::latest('played_at')->limit(20)->get();
         $prayerTimes   = $this->prayer->today();
         $nextPrayer    = $prayerTimes ? $this->prayer->nextPrayer($prayerTimes) : null;
         $dailyContents = $this->daily->getToday();
@@ -32,7 +32,7 @@ class RadioController extends Controller
     public function nowPlaying()
     {
         $stats   = $this->shoutcast->getStats();
-        $history = SongHistory::latest('played_at')->limit(10)->get();
+        $history = SongHistory::latest('played_at')->limit(20)->get();
 
         return response()->json([
             'current_song'  => $stats['current_song'],
