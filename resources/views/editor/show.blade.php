@@ -31,17 +31,12 @@
     </div>
     @endif
 
-    <div class="prose prose-lg max-w-none text-gray-700 leading-loose space-y-5">
-        @foreach(explode("\n\n", $editorPost->content) as $para)
-            @php $para = trim($para); @endphp
-            @if($para)
-                @if(str_starts_with($para, '"') || str_starts_with($para, '"') || str_starts_with($para, '«'))
-                <blockquote class="border-l-4 border-brand pl-5 italic text-gray-600 my-6 text-lg">{{ $para }}</blockquote>
-                @else
-                <p>{{ $para }}</p>
-                @endif
-            @endif
-        @endforeach
+    <div class="prose prose-lg max-w-none text-gray-700 leading-loose space-y-5
+                [&_h3]:text-brand [&_h3]:font-bold [&_h3]:text-xl [&_h3]:mt-8 [&_h3]:mb-3
+                [&_blockquote]:border-l-4 [&_blockquote]:border-brand [&_blockquote]:pl-5 [&_blockquote]:italic [&_blockquote]:text-gray-600 [&_blockquote]:my-6
+                [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1
+                [&_li]:text-gray-700 [&_strong]:text-gray-800">
+        {!! $editorPost->content !!}
     </div>
 
     <div class="mt-10 pt-6 border-t border-gray-100 flex items-center gap-3">
